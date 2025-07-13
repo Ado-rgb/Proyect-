@@ -24,13 +24,13 @@ const handler = async (msg, { conn }) => {
   const quotedMsg = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
   if (!quotedMsg || (!quotedMsg.audioMessage && !quotedMsg.videoMessage)) {
     await conn.sendMessage(msg.key.remoteJid, {
-      text: `✳️ Responde a una *nota de voz*, *audio* o *video* para identificar la canción.`
+      text: `✳️ 𝙍𝙚𝙨𝙥𝙤𝙣𝙙𝙚 𝙖 𝙪𝙣 *𝙖𝙪𝙙𝙞𝙤*, *𝙣𝙤𝙩𝙖 𝙙𝙚 𝙫𝙤𝙯* 𝙤 *𝙫𝙞𝙙𝙚𝙤* 𝙥𝙖𝙧𝙖 𝙙𝙚𝙩𝙚𝙘𝙩𝙖𝙧 𝙡𝙖 𝙘𝙖𝙣𝙘𝙞𝙤𝙣.`
     }, { quoted: msg });
     return;
   }
 
   await conn.sendMessage(msg.key.remoteJid, {
-    react: { text: '🔍', key: msg.key }
+    react: { text: '🎧', key: msg.key }
   });
 
   try {
@@ -55,44 +55,41 @@ const handler = async (msg, { conn }) => {
       headers: form.getHeaders()
     });
 
-    if (!upload.data || !upload.data.url) throw new Error('No se pudo subir el archivo');
+    if (!upload.data || !upload.data.url) throw new Error('🌐 No se pudo subir el archivo al servidor.');
     const fileUrl = upload.data.url;
 
-    const apiURL = `https://api.neoxr.eu/api/whatmusic?url=${encodeURIComponent(fileUrl)}&apikey=russellxz`;
+    const apiURL = `https://api.neoxr.eu/api/whatmusic?url=${encodeURIComponent(fileUrl)}&apikey=GataDios`;
     const res = await axios.get(apiURL);
-    if (!res.data.status || !res.data.data) throw new Error('No se pudo identificar la canción');
+    if (!res.data.status || !res.data.data) throw new Error('🧠 No se pudo identificar la canción.');
 
     const { title, artist, album, release } = res.data.data;
     const ytSearch = await yts(`${title} ${artist}`);
     const video = ytSearch.videos[0];
-    if (!video) throw new Error("No se encontró la canción en YouTube");
+    if (!video) throw new Error("📺 No se encontró la canción en YouTube");
 
     const banner = `
-╔══════════════════╗
-║ ✦ 𝗔𝘇𝘂𝗿𝗮 𝗨𝗹𝘁𝗿𝗮 𝟮.𝟬 𝗦𝘂𝗯𝗯𝗼𝘁 ✦
-╚══════════════════╝
+╭─💿 〘 𝗦𝗬𝗔 𝗧𝗘𝗔𝗠 𝗦𝗨𝗕𝗕𝗢𝗧 〙💿
+│ 🎶 𝙍𝙚𝙘𝙤𝙣𝙤𝙘𝙞𝙢𝙞𝙚𝙣𝙩𝙤 𝙙𝙚 𝙘𝙖𝙣𝙘𝙞𝙤𝙣
+├──────────────────────
+│ 📌 *Título:* ${title}
+│ 👤 *Artista:* ${artist}
+│ 💿 *Álbum:* ${album || 'Desconocido'}
+│ 📅 *Lanzamiento:* ${release || 'No disponible'}
+│ 🔍 *Resultado:* ${video.title}
+│ ⏱️ *Duración:* ${video.timestamp}
+│ 👁️ *Vistas:* ${video.views.toLocaleString()}
+│ 📺 *Canal:* ${video.author.name}
+│ 🔗 *YouTube:* ${video.url}
+╰──────────────────────
 
-🎵 *Canción detectada:*  
-╭───────────────╮  
-├ 📌 *Título:* ${title}
-├ 👤 *Artista:* ${artist}
-├ 💿 *Álbum:* ${album}
-├ 📅 *Lanzamiento:* ${release}
-├ 🔎 *Buscando:* ${video.title}
-├ ⏱️ *Duración:* ${video.timestamp}
-├ 👁️ *Vistas:* ${video.views.toLocaleString()}
-├ 📺 *Canal:* ${video.author.name}
-├ 🔗 *Link:* ${video.url}
-╰───────────────╯
-
-⏳ *Espere un momento, descargando la canción...*`;
+⏳ *𝘌𝘴𝘱𝘦𝘳𝘢 𝘮𝘪𝘦𝘯𝘵𝘳𝘢𝘴 𝘥𝘦𝘴𝘤𝘢𝘳𝘨𝘢𝘮𝘰𝘴 𝘭𝘢 𝘳𝘰𝘭𝘢...* 🎧`;
 
     await conn.sendMessage(msg.key.remoteJid, {
       image: { url: video.thumbnail },
       caption: banner
     }, { quoted: msg });
 
-    const ytRes = await axios.get(`https://api.neoxr.eu/api/youtube?url=${encodeURIComponent(video.url)}&type=audio&quality=128kbps&apikey=russellxz`);
+    const ytRes = await axios.get(`https://api.neoxr.eu/api/youtube?url=${encodeURIComponent(video.url)}&type=audio&quality=128kbps&apikey=GataDios`);
     const audioURL = ytRes.data.data.url;
 
     const rawPath = path.join(tmpDir, `${Date.now()}_raw.m4a`);
@@ -113,7 +110,18 @@ const handler = async (msg, { conn }) => {
     await conn.sendMessage(msg.key.remoteJid, {
       audio: fs.readFileSync(finalPath),
       mimetype: 'audio/mpeg',
-      fileName: `${title}.mp3`
+      fileName: `${title}.mp3`,
+      ptt: false,
+      contextInfo: {
+        externalAdReply: {
+          title: title,
+          body: `🎧 Identificado por Sya Team Subbot`,
+          thumbnailUrl: video.thumbnail,
+          mediaType: 2,
+          mediaUrl: video.url,
+          sourceUrl: video.url
+        }
+      }
     }, { quoted: msg });
 
     fs.unlinkSync(inputPath);
