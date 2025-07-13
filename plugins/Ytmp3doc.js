@@ -20,7 +20,7 @@ const handler = async (msg, { conn, text, usedPrefix }) => {
   });
 
   try {
-    const apiURL = `https://api.neoxr.eu/api/youtube?url=${encodeURIComponent(text)}&type=audio&quality=128kbps&apikey=russellxz`;
+    const apiURL = `https://api.neoxr.eu/api/youtube?url=${encodeURIComponent(text)}&type=audio&quality=128kbps&apikey=GataDios`;
     const res = await axios.get(apiURL);
     const json = res.data;
 
