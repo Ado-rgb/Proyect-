@@ -3588,203 +3588,108 @@ await sock.sendMessage2(
 }        
 case 'menu': {
   try {
-    // Reacción inicial (se mantiene sendMessage normal)
     await sock.sendMessage(msg.key.remoteJid, {
       react: { text: "📜", key: msg.key }
     });
 
     const chatId = msg.key.remoteJid;
-    const captionText = `╔═════════════╗  
-║ SYA TEAM BOT  
-║   🤖 𝘼𝙎𝙄𝙎𝙏𝙀𝙉𝙏𝙀 🤖     
-╚═════════════╝  
+    const captionText = `
+╔═⟡ 𝐒𝐘𝐀 𝐓𝐄𝐀𝐌 𝐁𝐎𝐓 ⟡═╗
+   🤖 𝙈𝙀𝙉𝙐 𝙂𝙀𝙉𝙀𝙍𝘼𝙇 🤖
+╚═════════════════╝
 
-╭──────────────╮  
-│ ✦ 𝙈𝙀𝙉𝙐 𝙂𝙀𝙉𝙀𝙍𝘼𝙇 ✦ │  
-╰──────────────╯  
+🄿 Prefijo: *${global.prefix}*
+🄷 Usa antes de cada comando
 
-⎔ 𝗣𝗿𝗲𝗳𝗶𝗷𝗼 𝗔𝗰𝘁𝘂𝗮𝗹: 『${global.prefix}』  
-⎔ 𝗨𝘀𝗮 『${global.prefix}』 𝗮𝗻𝘁𝗲𝘀 𝗱𝗲 𝗰𝗮𝗱𝗮 𝗰𝗼𝗺𝗮𝗻𝗱𝗼.  
+╭─💠 𝗦𝗨𝗕𝗕𝗢𝗧𝗦
+│⚙️ ${global.prefix}serbot
+│📥 ${global.prefix}code
+│❌ ${global.prefix}delbots
+╰───────────────
 
-╭──────────────╮  
-│ ✦ 𝗨𝗡𝗘𝗧𝗘 𝗔 𝗡𝗨𝗘𝗦𝗧𝗥𝗢 𝗦𝗜𝗦𝗧𝗘𝗠𝗔 𝗗𝗘 𝗦𝗨𝗕𝗕𝗢𝗧𝗦(𝗛𝗔𝗭𝗧𝗘 𝗕𝗢𝗧) ✦ │  
-╰──────────────╯  
+╭─📊 𝗜𝗡𝗙𝗢𝗥𝗠𝗔𝗖𝗜𝗢𝗡
+│⚡ ${global.prefix}ping
+│🏓 ${global.prefix}speedtest
+│👤 ${global.prefix}creador
+╰───────────────
 
-👾 *Hazte subbot en nuestro sistema, te voy a mostrar la lista de comandos para gestiónar/hacerte subbot: 
+╭─📚 𝗠𝗘𝗡𝗨𝗦
+│📁 ${global.prefix}allmenu
+│🧩 ${global.prefix}menurpg
+│🎧 ${global.prefix}menuaudio
+│🛠️ ${global.prefix}menufree
+╰───────────────
 
-⎔ ${global.prefix}serbot / ${global.prefix}jadibot
-⎔ ${global.prefix}sercode / ${global.prefix}code
-⎔ ${global.prefix}delbots
-° mas comandos en el menu de subbots...
+╭─🧠 𝗜𝗔 - 𝗖𝗛𝗔𝗧
+│🤖 ${global.prefix}chatgpt
+│🌌 ${global.prefix}gemini
+│🖼️ ${global.prefix}dalle
+│👁️ ${global.prefix}vision
+│🗣️ ${global.prefix}simi
+╰───────────────
 
-╭──────────────╮  
-│ ✦ 𝙄𝙉𝙁𝙊𝙍𝙈𝘼𝘾𝙄𝙊𝙉 ✦ │  
-╰──────────────╯
+╭─⬇️ 𝗗𝗘𝗦𝗖𝗔𝗥𝗚𝗔𝗦
+│🎵 ${global.prefix}play1/2/3
+│🎶 ${global.prefix}ytmp3
+│📹 ${global.prefix}ytmp4
+│🎶 ${global.prefix}spotify
+│🎥 ${global.prefix}tiktok / ig / fb
+╰───────────────
 
-⎔ ${global.prefix}speedtest  
-⎔ ${global.prefix}ping  
-⎔ ${global.prefix}creador    
+╭─🔍 𝗕𝗨𝗦𝗤𝗨𝗘𝗗𝗔𝗦
+│📦 ${global.prefix}yts
+│🎨 ${global.prefix}pixai
+│📱 ${global.prefix}tiktoksearch
+╰───────────────
 
-╭──────────────╮  
-│ ✦ 𝙈𝙀𝙉𝙐𝙎 𝘿𝙄𝙎𝙋𝙊𝙉𝙄𝘽𝙇𝙀𝙎 ✦ │  
-╰──────────────╯  
-⎔ ${global.prefix}allmenu  
-⎔ ${global.prefix}menugrupo  
-⎔ ${global.prefix}menuaudio  
-⎔ ${global.prefix}menurpg  
-⎔ ${global.prefix}info  
-⎔ ${global.prefix}menuowner  
-⎔ ${global.prefix}menufree
+╭─🎨 𝗦𝗧𝗜𝗖𝗞𝗘𝗥𝗦
+│🖼️ ${global.prefix}s
+│📁 ${global.prefix}newpack
+│➕ ${global.prefix}addsticker
+│🎁 ${global.prefix}sendpack
+╰───────────────
 
-╭──────────────╮  
-│ ✦ PARA VENTAS ✦ │  
-╰──────────────╯  
-⎔ ${global.prefix}setstock
-⎔ ${global.prefix}stock
-⎔ ${global.prefix}setnetflix
-⎔ ${global.prefix}netflix
-⎔ ${global.prefix}setpago
-⎔ ${global.prefix}pago
-⎔ ${global.prefix}setcombos
-⎔ ${global.prefix}setreglas
-⎔ ${global.prefix}reglas
-⎔ ${global.prefix}combos
-⎔ ${global.prefix}sorteo
-⎔ ${global.prefix}setpeliculas
-⎔ ${global.prefix}peliculas
-⎔ ${global.prefix}settramites
-⎔ ${global.prefix}tramites
-⎔ ${global.prefix}setcanvas
-⎔ ${global.prefix}canvas
+╭─🧰 𝗛𝗘𝗥𝗥𝗔𝗠𝗜𝗘𝗡𝗧𝗔𝗦
+│🔍 ${global.prefix}whatmusic
+│📤 ${global.prefix}tourl
+│🎧 ${global.prefix}tomp3
+│📥 ${global.prefix}ver
+╰───────────────
 
-╭──────────────╮  
-│ ✦ 𝙄𝘼 - 𝘾𝙃𝘼𝙏 𝘽𝙊𝙏 ✦ │  
-╰──────────────╯  
-⎔ ${global.prefix}gemini  
-⎔ ${global.prefix}chatgpt
-⎔ ${global.prefix}dalle
-⎔ ${global.prefix}visión 
-⎔ ${global.prefix}simi
-⎔ ${global.prefix}visión2
-⎔ ${global.prefix}chat on o off
-⎔ ${global.prefix}lumi on o off
-⎔ ${global.prefix}luminai
+╭─🎮 𝗝𝗨𝗘𝗚𝗢𝗦
+│❤️ ${global.prefix}ship
+│🧠 ${global.prefix}personalidad
+│🎲 ${global.prefix}verdad / reto
+╰───────────────
 
-╭──────────────╮  
-│ ✦ 𝘿𝙀𝙎𝘾𝘼𝙍𝙂𝘼 ✦ │  
-╰──────────────╯  
-⎔ ${global.prefix}play → título  
-⎔ ${global.prefix}playdoc → título  
-⎔ ${global.prefix}play1 → título  
-⎔ ${global.prefix}play2 → título  
-⎔ ${global.prefix}play2doc → título  
-⎔ ${global.prefix}play3 spotify → titulo
-⎔ ${global.prefix}play5 → titulo
-⎔ ${global.prefix}play6 → titulo
-⎔ ${global.prefix}ytmp3 → link  
-⎔ ${global.prefix}ytmp3doc → link
-⎔ ${global.prefix}ytmp35 → link  
-⎔ ${global.prefix}get → responder a un estado.
-⎔ ${global.prefix}ytmp4 → link  
-⎔ ${global.prefix}ytmp4doc → link  
-⎔ ${global.prefix}ytmp45 → link  
-⎔ ${global.prefix}tiktok → link  
-⎔ ${global.prefix}fb → link  
-⎔ ${global.prefix}ig → link  
-⎔ ${global.prefix}spotify → link
-⎔ ${global.prefix}mediafire → link
-⎔ ${global.prefix}apk → título
+╭─🔞 𝗡𝗦𝗙𝗪
+│🔞 ${global.prefix}videoxxx
+│💦 ${global.prefix}nsfwneko
+│👅 ${global.prefix}waifu / neko
+╰───────────────
 
-╭──────────────╮  
-│ ✦ 𝘽𝙐𝙎𝘾𝘼𝘿𝙊𝙍𝙀𝙎  ✦ │  
-╰──────────────╯  
+╭── 🛠️ 𝗘𝗡 𝗗𝗘𝗦𝗔𝗥𝗥𝗢𝗟𝗟𝗢
+│💻 Nuevas funciones pronto... 
+╰───────────────
 
-⎔ ${global.prefix}pixai → titulo
-⎔ ${global.prefix}Tiktoksearch → título
-⎔ ${global.prefix}Yts → título
-⎔ ${global.prefix}tiktokstalk → usuario
+👨‍💻 𝗕𝗢𝗧 𝗗𝗘𝗦𝗔𝗥𝗥𝗢𝗟𝗟𝗔𝗗𝗢 𝗣𝗢𝗥  
+𝗦𝗬𝗔 𝗧𝗘𝗔𝗠 💖
+`.trim();
 
-╭──────────────╮  
-│ ✦ 𝘾𝙊𝙉𝙑𝙀𝙍𝙏𝙄𝘿𝙊𝙍𝙀𝙎 ✦ │  
-╰──────────────╯ 
- 
-⎔ ${global.prefix}tomp3  
-⎔ ${global.prefix}tts  
-⎔ ${global.prefix}tovideo
-⎔ ${global.prefix}toimg
-⎔ ${global.prefix}gifvideo → responde a un video.
-⎔ ${global.prefix}ff
-⎔ ${global.prefix}ff2
-
-╭──────────────╮  
-│ ✦ 𝙎𝙏𝙄𝘾𝙆𝙀𝙍𝙎 ✦ │  
-╰──────────────╯  
-
-⎔ ${global.prefix}s
-⎔ ${global.prefix}newpack
-⎔ ${global.prefix}addsticker
-⎔ ${global.prefix}listpacks
-⎔ ${global.prefix}sendpack
-⎔ ${global.prefix}qc
-⎔ ${global.prefix}qc2
-⎔ ${global.prefix}texto
-
-╭──────────────╮  
-│ ✦ 𝙃𝙀𝙍𝙍𝘼𝙈𝙄𝙀𝙉𝙏𝘼𝙎 ✦ │  
-╰──────────────╯  
-
-⎔ ${global.prefix}ver → responder a un mensaje  
-⎔ ${global.prefix}tourl → responder a una imagen/video/musica
-⎔ ${global.prefix}whatmusic → Responder a un audio(mp3)/video(mp4)
-⎔ ${global.prefix}perfil 
-⎔ ${global.prefix}get
-⎔ ${global.prefix}xxx
-⎔ ${global.prefix}carga
-⎔ ${global.prefix}addco
-⎔ ${global.prefix}delco
-
-╭──────────────╮  
-│ ✦ 𝙈𝙄𝙉𝙄 𝙅𝙐𝙀𝙂𝙊𝙎 ✦ │  
-╰──────────────╯  
-⎔ ${global.prefix}verdad  
-⎔ ${global.prefix}reto  
-⎔ ${global.prefix}personalidad  
-⎔ ${global.prefix}ship  
-⎔ ${global.prefix}parejas  
-⎔ ${global.prefix}menurpg
-
-╭──────────────╮  
-│ ✦ COMANDO +18 ✦ │  
-╰──────────────╯  
-⎔ ${global.prefix}videoxxx
-⎔ ${global.prefix}pornololi
-⎔ ${global.prefix}nsfwneko
-⎔ ${global.prefix}Nsfwwaifu
-⎔ ${global.prefix}Waifu
-⎔ ${global.prefix}Neko
-
-╭─────────────────╮  
- ✦ SYA TEAM BOT 𝙀𝙎𝙏Á 𝙀𝙉 𝘾𝙊𝙉𝙎𝙏𝘼𝙉𝙏𝙀 𝘿𝙀𝙎𝘼𝙍𝙍𝙊𝙇𝙇𝙊. 
-  𝙎𝙀 𝘼𝙂𝙍𝙀𝙂𝘼𝙍Á𝙉 𝙈Á𝙎 𝙁𝙐𝙉𝘾𝙄𝙊𝙉𝙀𝙎 𝙋𝙍𝙊𝙉𝙏𝙊.   
-╰─────────────────╯  
-
-👨‍💻 𝘿𝙚𝙨𝙖𝙧𝙧𝙤𝙡𝙡𝙖𝙙𝙤 𝙥𝙤𝙧 SYA TEAM`;
-
-    // Enviar usando sendMessage2
     await sock.sendMessage2(
-  chatId,
-  {
-    image: { url: "https://cdn.russellxz.click/752ef2f1.jpeg" }, 
-    caption: captionText 
-  },
-  msg 
-)
+      chatId,
+      {
+        image: { url: "https://cdn.russellxz.click/752ef2f1.jpeg" },
+        caption: captionText
+      },
+      msg
+    );
 
   } catch (error) {
-    console.error("Error en comando menu:", error);
+    console.error("❌ Error en comando menu:", error);
     await sock.sendMessage2(
       msg.key.remoteJid,
-      "❌ *Ocurrió un error al mostrar el menú. Inténtalo de nuevo.*",
+      "🚫 *Error al mostrar el menú. Intenta otra vez.*",
       msg
     );
   }
