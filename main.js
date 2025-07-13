@@ -3599,7 +3599,7 @@ case 'menu': {
 ╚═════════════════╝
 
 🄿 Prefijo: *${global.prefix}*
-🄷 Usa antes de cada comando
+*🄷 Usa antes de cada comando*
 
 ╭─💠 𝗦𝗨𝗕𝗕𝗢𝗧𝗦
 │⚙️ ${global.prefix}serbot
@@ -3679,7 +3679,7 @@ case 'menu': {
     await sock.sendMessage2(
       chatId,
       {
-        image: { url: "https://cdn.russellxz.click/752ef2f1.jpeg" },
+        image: { url: "https://cdn.russellxz.click/6a8263d8.jpeg" },
         caption: captionText
       },
       msg
