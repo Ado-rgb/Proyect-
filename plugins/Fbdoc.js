@@ -7,83 +7,90 @@ const handler = async (msg, { conn, text, command }) => {
 
   if (!text) {
     return await conn.sendMessage(chatId, {
-      text: `✳️ Ejemplo de uso:\n📌 *${global.prefix + command}* https://fb.watch/ncowLHMp-x/`
+      text: `⚠️ *Uso inválido.*\nEnvía un enlace válido de Facebook.\n\nEjemplo:\n📌 *${global.prefix + command}* https://fb.watch/ncowLHMp-x/`
     }, { quoted: msg });
   }
 
-  if (!text.match(/(www\.facebook\.com|fb\.watch)/gi)) {
+  if (!text.match(/(facebook\.com|fb\.watch)/i)) {
     return await conn.sendMessage(chatId, {
-      text: `❌ *Enlace de Facebook inválido.*\n\n📌 Ejemplo:\n${global.prefix + command} https://fb.watch/ncowLHMp-x/`
+      text: `❌ *Este no es un enlace válido de Facebook.*\n\nIntenta con algo como:\n📌 *${global.prefix + command}* https://fb.watch/ncowLHMp-x/`
     }, { quoted: msg });
   }
 
   await conn.sendMessage(chatId, {
-    react: { text: '⏳', key: msg.key }
+    react: { text: "⏳", key: msg.key }
   });
 
   try {
-    const res = await axios.get(`https://api.dorratz.com/fbvideo?url=${encodeURIComponent(text)}`);
-    const results = res.data;
+    const { data } = await axios.get(`https://api.dorratz.com/fbvideo?url=${encodeURIComponent(text)}`);
 
-    if (!results || results.length === 0 || !results[0].url) {
+    if (!data || !Array.isArray(data) || data.length === 0 || !data[0].url) {
       return await conn.sendMessage(chatId, {
-        text: "❌ No se pudo obtener el video."
+        text: "⚠️ No se encontró el video o está inaccesible."
       }, { quoted: msg });
     }
 
-    const videoUrl = results[0].url;
+    const videoUrl = data[0].url;
 
-    const tmpDir = path.resolve('./tmp');
+    const tmpDir = path.resolve("./tmp");
     if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir);
 
-    const filePath = path.join(tmpDir, `fb-${Date.now()}.mp4`);
+    const fileName = `fb_${Date.now()}.mp4`;
+    const filePath = path.join(tmpDir, fileName);
 
-    // Descargar y guardar el archivo
-    const videoRes = await axios.get(videoUrl, { responseType: "stream" });
+    const videoStream = await axios.get(videoUrl, { responseType: "stream" });
     const writer = fs.createWriteStream(filePath);
 
     await new Promise((resolve, reject) => {
-      videoRes.data.pipe(writer);
+      videoStream.data.pipe(writer);
       writer.on("finish", resolve);
       writer.on("error", reject);
     });
 
-    // Verificamos que existe antes de continuar
     if (!fs.existsSync(filePath)) {
       return await conn.sendMessage(chatId, {
-        text: "❌ El archivo no se guardó correctamente. Intenta nuevamente."
+        text: "❌ Falló la descarga del archivo. Intenta de nuevo."
       }, { quoted: msg });
     }
 
-    // Validar tamaño
     const stats = fs.statSync(filePath);
     const sizeMB = stats.size / (1024 * 1024);
+
     if (sizeMB > 500) {
       fs.unlinkSync(filePath);
       return await conn.sendMessage(chatId, {
-        text: `❌ *El archivo pesa ${sizeMB.toFixed(2)}MB y excede el límite de 500MB.*`
+        text: `🚫 Archivo muy pesado: *${sizeMB.toFixed(2)}MB* (máximo permitido 500MB).`
       }, { quoted: msg });
     }
 
-    // Enviar el archivo guardado
-    const caption = `📄 *Resoluciones disponibles:*\n${results.map(r => `- ${r.resolution}`).join('\n')}\n\n📥 *Video descargado como documento (720p)*\n🍧 *API:* api.dorratz.com\n\n───────\n© Azura Ultra`;
+    const resoList = data.map(item => `• ${item.resolution}`).join("\n");
+
+    const caption = `
+📥 *Descarga completa* ✅
+📄 *Resoluciones disponibles:*
+${resoList}
+
+📝 Video enviado como documento (720p).
+🔥 Powered by SYA TEAM BOT
+`.trim();
 
     await conn.sendMessage(chatId, {
       document: fs.readFileSync(filePath),
       mimetype: "video/mp4",
-      fileName: "facebook_video.mp4",
+      fileName: fileName,
       caption
     }, { quoted: msg });
 
     fs.unlinkSync(filePath);
+
     await conn.sendMessage(chatId, {
       react: { text: "✅", key: msg.key }
     });
 
-  } catch (err) {
-    console.error("❌ Error en fbdoc:", err);
+  } catch (error) {
+    console.error("Error en fbdoc:", error);
     await conn.sendMessage(chatId, {
-      text: "❌ Ocurrió un error al procesar o enviar el video."
+      text: "⚠️ Error al procesar el video. Intenta más tarde."
     }, { quoted: msg });
   }
 };
