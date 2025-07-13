@@ -17,7 +17,7 @@ const handler = async (msg, { conn }) => {
     const usedPrefix = prefixes[subbotID] || ".";
 
     await conn.sendMessage(msg.key.remoteJid, {
-      react: { text: "📜", key: msg.key }
+      react: { text: "💥", key: msg.key }
     });
 
     let customData = {};
@@ -82,32 +82,32 @@ const handler = async (msg, { conn }) => {
 
 📌 *SYA SUBBOT* — Sistema de subbots.
 `.trim() : `
-╔═⟪ 𝗠𝗘𝗡𝗨́ 𝗚𝗘𝗡𝗘𝗥𝗔𝗟 - SYA SUBBOT ⟫═╗
+⟪ 𝗠𝗘𝗡𝗨́ - SYA SUBBOT ⟫
 
 🔸 Usa: *${usedPrefix}menurpg* para comenzar en el modo RPG
 🔸 Invita a tus amigos a usar el subbot con: *${usedPrefix}serbot* o *${usedPrefix}code*
 
-🧠 IA & Chat:
+*🧠 IA & Chat:*
   ✦ ${usedPrefix}chatgpt
   ✦ ${usedPrefix}geminis
 
-📥 Descargas:
+*📥 Descargas:*
   ✦ ${usedPrefix}play / playdoc
   ✦ ${usedPrefix}ytmp3 / ytmp3doc
   ✦ ${usedPrefix}ytmp4 / ytmp4doc
   ✦ ${usedPrefix}apk / ig / tt / fb
 
-🎭 Stickers & Multimedia:
+*🎭 Stickers & Multimedia:*
   ✦ ${usedPrefix}s / ver / hd
   ✦ ${usedPrefix}toimg / toaudio / whatmusic
 
-👥 Grupos:
+*👥 Grupos:*
   ✦ ${usedPrefix}abrirgrupo / cerrargrupo
   ✦ ${usedPrefix}modoadmins on/off
   ✦ ${usedPrefix}tagall / damelink
   ✦ ${usedPrefix}infogrupo / kick
 
-🎮 Juegos:
+*🎮 Juegos:*
   ✦ ${usedPrefix}verdad / reto / kiss / slap
 
 ⚙️ Configuración:
