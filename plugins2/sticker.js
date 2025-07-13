@@ -10,28 +10,28 @@ const tempFolder = path.join(__dirname, '../tmp/');
 if (!fs.existsSync(tempFolder)) fs.mkdirSync(tempFolder, { recursive: true });
 
 const handler = async (msg, { conn }) => {
-    const rawID = conn.user?.id || "";
+  const rawID = conn.user?.id || "";
   const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
 
-  // Obtener prefijo del subbot
   const prefixPath = path.resolve("prefixes.json");
   let prefixes = {};
   if (fs.existsSync(prefixPath)) {
     prefixes = JSON.parse(fs.readFileSync(prefixPath, "utf-8"));
   }
   const usedPrefix = prefixes[subbotID] || ".";
+
   try {
     const quoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
     if (!quoted) {
       return await conn.sendMessage(msg.key.remoteJid, {
-        text: `⚠️ *Responde a una imagen o video con el comando \`${usedPrefix}s\` para crear un sticker.*`
+        text: `⚠️ *Responde a una imagen o video con el comando ${usedPrefix}s para crear un sticker.*`
       }, { quoted: msg });
     }
 
     const mediaType = quoted.imageMessage ? 'image' : quoted.videoMessage ? 'video' : null;
     if (!mediaType) {
       return await conn.sendMessage(msg.key.remoteJid, {
-        text: '⚠️ *Solo puedes convertir imágenes o videos en stickers.*'
+        text: '⚠️ Solo puedes convertir imágenes o videos en stickers.'
       }, { quoted: msg });
     }
 
@@ -48,8 +48,9 @@ const handler = async (msg, { conn }) => {
     for await (const chunk of mediaStream) buffer = Buffer.concat([buffer, chunk]);
 
     const metadata = {
-      packname: `✨ Lo Mandó Hacer: ${senderName} ✨`,
-      author: `🤖 Bot Creador: Azura Ultra 2.0 Subbot\n🛠️ Desarrollado por: 𝙍𝙪𝙨𝙨𝙚𝙡𝙡 xz 💻\n${fechaCreacion}`
+      packname: `✨ Mandado por: ${senderName} ✨`,
+      author: `🤖 Subbot: *Sya Team Bot*\n🧩 Powered by: SYA TEAM\n${fechaCreacion}`,
+      categories: ['🧊', '✨', '🔥']
     };
 
     const sticker = mediaType === 'image'
@@ -67,7 +68,7 @@ const handler = async (msg, { conn }) => {
   } catch (err) {
     console.error('❌ Error en sticker s:', err);
     await conn.sendMessage(msg.key.remoteJid, {
-      text: '❌ *Hubo un error al procesar el sticker. Inténtalo de nuevo.*'
+      text: '❌ Hubo un error al procesar el sticker. Intenta de nuevo.'
     }, { quoted: msg });
 
     await conn.sendMessage(msg.key.remoteJid, {
@@ -79,7 +80,7 @@ const handler = async (msg, { conn }) => {
 handler.command = ['s'];
 module.exports = handler;
 
-/* === FUNCIONES DE CONVERSIÓN DE STICKERS CON EXIF Y ALTA CALIDAD === */
+// FUNCIONES DE STICKERS CON EXIF Y CALIDAD ALTA
 
 async function imageToWebp(media) {
   const tmpIn = path.join(tempFolder, randomFileName('jpg'));
@@ -149,7 +150,7 @@ async function addExif(webpBuffer, metadata) {
   fs.writeFileSync(tmpIn, webpBuffer);
 
   const json = {
-    "sticker-pack-id": "azura-ultra&cortana",
+    "sticker-pack-id": "sya-ultra-stickers",
     "sticker-pack-name": metadata.packname,
     "sticker-pack-publisher": metadata.author,
     "emojis": metadata.categories || [""]
@@ -163,6 +164,7 @@ async function addExif(webpBuffer, metadata) {
     0x00, 0x00, 0x16, 0x00,
     0x00, 0x00
   ]);
+
   const jsonBuff = Buffer.from(JSON.stringify(json), "utf-8");
   const exif = Buffer.concat([exifAttr, jsonBuff]);
   exif.writeUIntLE(jsonBuff.length, 14, 4);
