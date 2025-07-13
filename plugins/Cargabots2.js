@@ -12,7 +12,7 @@ const {
 module.exports = async (msg, { conn }) => {
   const sender = (msg.key.participant || msg.key.remoteJid).replace("@s.whatsapp.net", "");
   const botNum = conn.user.id.split(":")[0];
-  const isOwner = global.owner?.some(n => String(n) === sender); // ✅ corrección aplicada aquí
+  const isOwner = global.owner?.some(([n]) => String(n) === sender);
   const isBotAuthor = msg.key.fromMe;
 
   if (!isOwner && !isBotAuthor) {
