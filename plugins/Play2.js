@@ -45,12 +45,11 @@ module.exports = async (msg, { conn, text }) => {
 
   // Mensaje con la info y opciones
   const infoMsg = `
-🎵 *SYA TEAM BOT - PLAY2 * 🎵
+🎵 *SYA TEAM BOT - PLAY2* 🎵
 
 📌 *Título:* ${title}
 ⏳ *Duración:* ${duration}
 👁️ *Vistas:* ${viewsFormatted}
-🎤 *Autor:* ${author}
 🔗 *Enlace:* ${url}
 
 📥 *Opciones para descargar*:
