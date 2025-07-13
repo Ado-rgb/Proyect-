@@ -22,7 +22,7 @@ const handler = async (msg, { conn, text, usedPrefix }) => {
 
     for (let quality of qualities) {
       try {
-        const apiUrl = `https://api.neoxr.eu/api/youtube?url=${encodeURIComponent(text)}&type=video&quality=${quality}&apikey=russellxz`;
+        const apiUrl = `https://api.neoxr.eu/api/youtube?url=${encodeURIComponent(text)}&type=video&quality=${quality}&apikey=GataDios`;
         const response = await axios.get(apiUrl);
         if (response.data?.status && response.data?.data?.url) {
           videoData = {
