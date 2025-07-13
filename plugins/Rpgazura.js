@@ -62,5 +62,5 @@ const handler = async (msg, { conn, args }) => {
   });
 };
 
-handler.command = ["rpgazura"];
+handler.command = ["rpgsya"];
 module.exports = handler;
