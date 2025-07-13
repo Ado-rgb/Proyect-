@@ -7,7 +7,6 @@ const { promisify } = require("util");
 const { pipeline } = require("stream");
 const streamPipe = promisify(pipeline);
 
-// Almacena tareas pendientes por previewMessageId
 const pending = {};
 
 module.exports = async (msg, { conn, text }) => {
@@ -24,23 +23,25 @@ module.exports = async (msg, { conn, text }) => {
   if (!text) {
     return conn.sendMessage(
       msg.key.remoteJid,
-      { text: `✳️ Usa:\n${pref}playpro <término>\nEj: *${pref}playpro* bad bunny diles` },
+      {
+        text:
+          `❗ *Uso:* *${pref}playpro* <término de búsqueda> 🎶\n` +
+          `🔍 *Ejemplo:* *${pref}playpro* bad bunny diles`
+      },
       { quoted: msg }
     );
   }
 
-  // reacción de carga
   await conn.sendMessage(msg.key.remoteJid, {
     react: { text: "⏳", key: msg.key }
   });
 
-  // búsqueda
   const res = await yts(text);
   const video = res.videos[0];
   if (!video) {
     return conn.sendMessage(
       msg.key.remoteJid,
-      { text: "❌ Sin resultados." },
+      { text: "❌ No se encontraron resultados." },
       { quoted: msg }
     );
   }
@@ -49,39 +50,29 @@ module.exports = async (msg, { conn, text }) => {
   const viewsFmt = views.toLocaleString();
 
   const caption = `
-╔═══════════════╗
-║✦ 𝘼𝙕𝙐𝙍𝘼 𝙐𝗹𝘁𝗋𝗮 2.0 BOT✦
-╚═══════════════╝
-📀 Info del video:
-╭───────────────╮
-├ 🎼 Título: ${title}
-├ ⏱️ Duración: ${duration}
-├ 👁️ Vistas: ${viewsFmt}
-├ 👤 Autor: ${author}
-└ 🔗 Link: ${videoUrl}
-╰───────────────╯
-📥 Opciones de Descarga reacione o responda el mensaje del bot🎮:
-┣ 👍 Audio MP3     (1 / audio)
-┣ ❤️ Video MP4     (2 / video)
-┣ 📄 Audio Doc     (4 / audiodoc)
-┗ 📁 Video Doc     (3 / videodoc)
+╔════════════════════╗
+║   🎧 SYA TEAM BOT 🎧  ║
+╠════════════════════╣
+║ 🎵 Título: ${title}
+║ ⏱ Duración: ${duration}
+║ 👀 Vistas: ${viewsFmt}
+║ 📺 Canal: ${author}
+║ 🔗 Link: ${videoUrl}
+╠════════════════════╣
+║ 📥 Responde o reacciona con:
+║ 1️⃣ / audio 🎶
+║ 2️⃣ / video 🎥
+║ 4️⃣ / audiodoc 📄
+║ 3️⃣ / videodoc 📁
+╚════════════════════╝
+`;
 
-📦 Si usas termux o no estás en Sky Ultra Plus:
-┣ 🎵 ${pref}play5 ${text}
-┣ 🎥 ${pref}play6 ${text}
-┗ ⚠️ ${pref}ff
-═════════════════════
-   𖥔 Azura Ultra 2.0 Bot 𖥔
-═════════════════════`.trim();
-
-  // envía preview
   const preview = await conn.sendMessage(
     msg.key.remoteJid,
     { image: { url: video.thumbnail }, caption },
     { quoted: msg }
   );
 
-  // guarda trabajo
   pending[preview.key.id] = {
     chatId: msg.key.remoteJid,
     videoUrl,
@@ -90,17 +81,14 @@ module.exports = async (msg, { conn, text }) => {
     done: { audio: false, video: false, audioDoc: false, videoDoc: false }
   };
 
-  // confirmación
   await conn.sendMessage(msg.key.remoteJid, {
     react: { text: "✅", key: msg.key }
   });
 
-  // listener único
   if (!conn._playproListener) {
     conn._playproListener = true;
     conn.ev.on("messages.upsert", async ev => {
       for (const m of ev.messages) {
-        // 1) REACCIONES
         if (m.message?.reactionMessage) {
           const { key: reactKey, text: emoji } = m.message.reactionMessage;
           const job = pending[reactKey.id];
@@ -109,7 +97,6 @@ module.exports = async (msg, { conn, text }) => {
           }
         }
 
-        // 2) RESPUESTAS CITADAS
         try {
           const context = m.message?.extendedTextMessage?.contextInfo;
           const citado = context?.stanzaId;
@@ -121,34 +108,28 @@ module.exports = async (msg, { conn, text }) => {
           const job = pending[citado];
           const chatId = m.key.remoteJid;
           if (citado && job) {
-            // AUDIO
             if (["1", "audio", "4", "audiodoc"].includes(texto)) {
               const docMode = ["4", "audiodoc"].includes(texto);
-              await conn.sendMessage(chatId, { react: { text: docMode ? "📄" : "🎵", key: m.key } });
-              await conn.sendMessage(chatId, { text: `🎶 Descargando audio...` }, { quoted: m });
+              await conn.sendMessage(chatId, { react: { text: docMode ? "📄" : "🎶", key: m.key } });
+              await conn.sendMessage(chatId, { text: "🔊 Descargando audio..." }, { quoted: m });
               await downloadAudio(conn, job, docMode, m);
-            }
-            // VIDEO
-            else if (["2", "video", "3", "videodoc"].includes(texto)) {
+            } else if (["2", "video", "3", "videodoc"].includes(texto)) {
               const docMode = ["3", "videodoc"].includes(texto);
-              await conn.sendMessage(chatId, { react: { text: docMode ? "📁" : "🎬", key: m.key } });
-              await conn.sendMessage(chatId, { text: `🎥 Descargando video...` }, { quoted: m });
+              await conn.sendMessage(chatId, { react: { text: docMode ? "📁" : "🎥", key: m.key } });
+              await conn.sendMessage(chatId, { text: "🎬 Descargando video..." }, { quoted: m });
               await downloadVideo(conn, job, docMode, m);
-            }
-            // AYUDA
-            else {
+            } else {
               await conn.sendMessage(chatId, {
-                text: `⚠️ Opciones válidas:\n1/audio, 4/audiodoc → audio\n2/video, 3/videodoc → video`
+                text: "⚠️ Opciones válidas:\n1/audio, 4/audiodoc → audio\n2/video, 3/videodoc → video"
               }, { quoted: m });
             }
 
-            // elimina de pending después de 5 minutos
             if (!job._timer) {
-              job._timer = setTimeout(() => delete pending[citado], 5 * 60 * 1000);
+              job._timer = setTimeout(() => delete pending[citado], 300000);
             }
           }
         } catch (e) {
-          console.error("Error en detector citado:", e);
+          console.error("Error en respuestas citadas:", e);
         }
       }
     });
@@ -165,7 +146,7 @@ async function handleDownload(conn, job, choice, quotedMsg) {
   const key = mapping[choice];
   if (key) {
     const isDoc = key.endsWith("Doc");
-    await conn.sendMessage(job.chatId, { text: `⏳ Descargando ${isDoc ? "documento" : key}…` }, { quoted: job.commandMsg });
+    await conn.sendMessage(job.chatId, { text: `⏳ Descargando ${isDoc ? "documento" : key}...` }, { quoted: job.commandMsg });
     if (key.startsWith("audio")) await downloadAudio(conn, job, isDoc, job.commandMsg);
     else await downloadVideo(conn, job, isDoc, job.commandMsg);
   }
@@ -173,7 +154,7 @@ async function handleDownload(conn, job, choice, quotedMsg) {
 
 async function downloadAudio(conn, job, asDocument, quoted) {
   const { chatId, videoUrl, title } = job;
-  const api = `https://api.neoxr.eu/api/youtube?url=${encodeURIComponent(videoUrl)}&type=audio&quality=128kbps&apikey=russellxz`;
+  const api = `https://api.neoxr.eu/api/youtube?url=${encodeURIComponent(videoUrl)}&type=audio&quality=128kbps&apikey=GataDios`;
   const res = await axios.get(api);
   if (!res.data?.status || !res.data.data?.url) throw new Error("No se pudo obtener el audio");
   const tmp = path.join(__dirname, "../tmp");
@@ -182,7 +163,15 @@ async function downloadAudio(conn, job, asDocument, quoted) {
   const outFile = path.join(tmp, `${Date.now()}_out.mp3`);
   const download = await axios.get(res.data.data.url, { responseType: "stream" });
   await streamPipe(download.data, fs.createWriteStream(inFile));
-  await new Promise((r, e) => ffmpeg(inFile).audioCodec("libmp3lame").audioBitrate("128k").format("mp3").save(outFile).on("end", r).on("error", e));
+  await new Promise((r, e) =>
+    ffmpeg(inFile)
+      .audioCodec("libmp3lame")
+      .audioBitrate("128k")
+      .format("mp3")
+      .save(outFile)
+      .on("end", r)
+      .on("error", e)
+  );
   const buffer = fs.readFileSync(outFile);
   await conn.sendMessage(chatId, {
     [asDocument ? "document" : "audio"]: buffer,
@@ -195,12 +184,15 @@ async function downloadAudio(conn, job, asDocument, quoted) {
 
 async function downloadVideo(conn, job, asDocument, quoted) {
   const { chatId, videoUrl, title } = job;
-  const qualities = ["720p","480p","360p"];
+  const qualities = ["720p", "480p", "360p"];
   let url = null;
   for (let q of qualities) {
     try {
-      const r = await axios.get(`https://api.neoxr.eu/api/youtube?url=${encodeURIComponent(videoUrl)}&type=video&quality=${q}&apikey=russellxz`);
-      if (r.data?.status && r.data.data?.url) { url = r.data.data.url; break; }
+      const r = await axios.get(`https://api.neoxr.eu/api/youtube?url=${encodeURIComponent(videoUrl)}&type=video&quality=${q}&apikey=GataDios`);
+      if (r.data?.status && r.data.data?.url) {
+        url = r.data.data.url;
+        break;
+      }
     } catch {}
   }
   if (!url) throw new Error("No se pudo obtener el video");
@@ -213,7 +205,7 @@ async function downloadVideo(conn, job, asDocument, quoted) {
     [asDocument ? "document" : "video"]: fs.readFileSync(file),
     mimetype: "video/mp4",
     fileName: `${title}.mp4`,
-    caption: asDocument ? undefined : `🎬 Aquí tiene su video.\n© Azura Ultra`
+    caption: asDocument ? undefined : "🎬 Video entregado por SYA TEAM BOT"
   }, { quoted });
   fs.unlinkSync(file);
 }
