@@ -10,7 +10,7 @@ const streamPipeline = promisify(pipeline);
 const handler = async (msg, { conn, text, usedPrefix }) => {
   if (!text) {
     return await conn.sendMessage(msg.key.remoteJid, {
-      text: `✳️ Usa el comando correctamente:\n\n📌 Ejemplo: *${usedPrefix}playdoc* bad bunny diles`
+      text: `⚠️ Usa correctamente el comando:\n\n📌 Ejemplo: *${usedPrefix}playdoc* bad bunny diles`
     }, { quoted: msg });
   }
 
@@ -21,7 +21,7 @@ const handler = async (msg, { conn, text, usedPrefix }) => {
   try {
     const search = await yts(text);
     const video = search.videos[0];
-    if (!video) throw new Error('No se encontraron resultados');
+    if (!video) throw new Error('No se encontraron resultados.');
 
     const videoUrl = video.url;
     const thumbnail = video.thumbnail;
@@ -32,23 +32,17 @@ const handler = async (msg, { conn, text, usedPrefix }) => {
 
     const infoMessage = `
 ╔══════════════════╗
-║  ✦ 𝘼𝙕𝙐𝙍𝘼 𝙐𝙇𝙏𝙍𝘼 𝟮.𝟬 𝗕𝗢𝗧 ✦
+║  ✦ SYA TEAM BOT ✦
 ╚══════════════════╝
 
-📀 *Info del audio:*  
+🎵 *Audio Info:*  
 ├ 🎼 *Título:* ${title}
 ├ ⏱️ *Duración:* ${fduration}
 ├ 👁️ *Vistas:* ${views}
-├ 👤 *Autor:* ${channel}
-└ 🔗 *Enlace:* ${videoUrl}
+├ 👤 *Canal:* ${channel}
+└ 🔗 *Link:* ${videoUrl}
 
-📥 *Opciones:*  
-┣ 🎵 _${usedPrefix}play1 ${text}_
-┣ 🎥 _${usedPrefix}play2 ${text}_
-┣ 🎥 _${usedPrefix}play6 ${text}_
-┗ ⚠️ *¿No se reproduce?* Usa _${usedPrefix}ff_
-
-⏳ Procesando audio...
+⏳ Procesando audio, aguanta un toque...
 ═══════════════════`;
 
     await conn.sendMessage(msg.key.remoteJid, {
@@ -56,11 +50,11 @@ const handler = async (msg, { conn, text, usedPrefix }) => {
       caption: infoMessage
     }, { quoted: msg });
 
-    const apiURL = `https://api.neoxr.eu/api/youtube?url=${encodeURIComponent(videoUrl)}&type=audio&quality=128kbps&apikey=russellxz`;
+    const apiURL = `https://api.neoxr.eu/api/youtube?url=${encodeURIComponent(videoUrl)}&type=audio&quality=128kbps&apikey=GataDios`;
     const res = await axios.get(apiURL);
     const json = res.data;
 
-    if (!json.status || !json.data?.url) throw new Error("No se pudo obtener el audio");
+    if (!json.status || !json.data?.url) throw new Error("No se pudo obtener el audio.");
 
     const tmpDir = path.join(__dirname, '../tmp');
     if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir);
@@ -97,7 +91,7 @@ const handler = async (msg, { conn, text, usedPrefix }) => {
   } catch (err) {
     console.error(err);
     await conn.sendMessage(msg.key.remoteJid, {
-      text: `❌ *Error:* ${err.message}`
+      text: `❌ Error: ${err.message}`
     }, { quoted: msg });
 
     await conn.sendMessage(msg.key.remoteJid, {
