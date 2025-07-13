@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { writeExifImg } = require('../libs/fuctions'); // ajusta la ruta si hace falta
+const { writeExifImg } = require('../libs/fuctions');
 
 const flagMap = [
   ['598', '🇺🇾'], ['595', '🇵🇾'], ['593', '🇪🇨'], ['591', '🇧🇴'],
@@ -20,9 +20,8 @@ function numberWithFlag(num) {
   return num;
 }
 
-const quotedPush = q => (
-  q?.pushName || q?.sender?.pushName || ''
-);
+const quotedPush = q =>
+  q?.pushName || q?.sender?.pushName || '';
 
 async function niceName(jid, conn, chatId, qPush, fallback = '') {
   if (qPush && qPush.trim() && !/^\d+$/.test(qPush)) return qPush;
@@ -64,81 +63,83 @@ const handler = async (msg, { conn, args }) => {
     const quoted = ctx?.quotedMessage;
 
     let targetJid = msg.key.participant || msg.key.remoteJid;
-    let textQuoted = '';
-    let fallbackPN = msg.pushName || '';
+    let quotedText = '';
+    let fallbackName = msg.pushName || '';
     let qPushName = '';
 
     if (quoted && ctx?.participant) {
       targetJid = ctx.participant;
-      textQuoted = quoted.conversation ||
-                   quoted.extendedTextMessage?.text || '';
+      quotedText = quoted.conversation || quoted.extendedTextMessage?.text || '';
       qPushName = quotedPush(quoted);
-      fallbackPN = '';
+      fallbackName = '';
     }
 
-    const contentFull = (args.join(' ').trim() || '').trim();
+    const fullInput = (args.join(' ').trim() || '').trim();
 
-    if (!contentFull && !textQuoted) {
+    if (!fullInput && !quotedText) {
       return conn.sendMessage(chatId, {
-        text: `✏️ Usa qc así:\n\n*• qc [texto]*\n*• qc [color] [texto]*\n\nColores disponibles:\nrojo, azul, morado, verde, amarillo, naranja, celeste, rosado, negro`
+        text: `🎨 *Uso del comando QC:*\n\n📌 _Enviar como:_\n• *qc [texto]*\n• *qc [color] [texto]*\n\n🎨 *Colores disponibles:*\n${Object.keys(colors).join(', ')}`
       }, { quoted: msg });
     }
 
-    const firstWord = contentFull.split(' ')[0].toLowerCase();
+    const firstWord = fullInput.split(' ')[0].toLowerCase();
     const bgColor = colors[firstWord] || colors['negro'];
 
-    let content = '';
+    let messageText = '';
 
     if (colors[firstWord]) {
-      const afterColor = contentFull.split(' ').slice(1).join(' ').trim();
-      if (afterColor.length > 0) {
-        content = afterColor;
-      } else {
-        content = textQuoted || ' ';
-      }
+      const rest = fullInput.split(' ').slice(1).join(' ').trim();
+      messageText = rest || quotedText || ' ';
     } else {
-      content = contentFull || textQuoted || ' ';
+      messageText = fullInput || quotedText || ' ';
     }
 
-    const plain = content.replace(/@[\d\-]+/g, '');
-
-    const displayName = await niceName(targetJid, conn, chatId, qPushName, fallbackPN);
+    const plain = messageText.replace(/@[\d\-]+/g, '');
+    const displayName = await niceName(targetJid, conn, chatId, qPushName, fallbackName);
 
     let avatar = 'https://telegra.ph/file/24fa902ead26340f3df2c.png';
     try { avatar = await conn.profilePictureUrl(targetJid, 'image'); } catch {}
 
-    await conn.sendMessage(chatId, { react: { text: '🎨', key: msg.key } });
+    await conn.sendMessage(chatId, { react: { text: '🖌️', key: msg.key } });
 
-    const quoteData = {
-      type: 'quote', format: 'png', backgroundColor: bgColor,
-      width: 600, height: 900, scale: 3,
+    const payload = {
+      type: 'quote',
+      format: 'png',
+      backgroundColor: bgColor,
+      width: 600,
+      height: 900,
+      scale: 3,
       messages: [{
         entities: [],
         avatar: true,
-        from: { id: 1, name: displayName, photo: { url: avatar } },
+        from: {
+          id: 1,
+          name: displayName,
+          photo: { url: avatar }
+        },
         text: plain,
         replyMessage: {}
       }]
     };
 
-    const { data } = await axios.post(
-      'https://bot.lyo.su/quote/generate',
-      quoteData,
-      { headers: { 'Content-Type': 'application/json' } }
-    );
+    const { data } = await axios.post('https://bot.lyo.su/quote/generate', payload, {
+      headers: { 'Content-Type': 'application/json' }
+    });
 
-    const stickerBuf = Buffer.from(data.result.image, 'base64');
-    const sticker = await writeExifImg(stickerBuf, {
-      packname: 'Azura Ultra 2.0 Bot',
-      author: '𝙍𝙪𝙨𝙨𝙚𝙡𝙡 xz 💻'
+    const buffer = Buffer.from(data.result.image, 'base64');
+    const sticker = await writeExifImg(buffer, {
+      packname: 'Sya Team ✨',
+      author: 'By SYA Admins ⚙️'
     });
 
     await conn.sendMessage(chatId, { sticker: { url: sticker } }, { quoted: msg });
     await conn.sendMessage(chatId, { react: { text: '✅', key: msg.key } });
 
-  } catch (e) {
-    console.error('❌ Error en qc:', e);
-    await conn.sendMessage(msg.key.remoteJid, { text: '❌ Error al generar el sticker.' }, { quoted: msg });
+  } catch (err) {
+    console.error('❌ Error en qc:', err);
+    await conn.sendMessage(msg.key.remoteJid, {
+      text: '❌ Error al generar el sticker. Intenta de nuevo.'
+    }, { quoted: msg });
   }
 };
 
