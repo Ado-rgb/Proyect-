@@ -50,21 +50,19 @@ module.exports = async (msg, { conn, text }) => {
   const viewsFmt = views.toLocaleString();
 
   const caption = `
-╔════════════════════╗
-║   🎧 SYA TEAM BOT 🎧  ║
-╠════════════════════╣
-║ 🎵 Título: ${title}
-║ ⏱ Duración: ${duration}
-║ 👀 Vistas: ${viewsFmt}
-║ 📺 Canal: ${author}
-║ 🔗 Link: ${videoUrl}
-╠════════════════════╣
-║ 📥 Responde o reacciona con:
-║ 1️⃣ / audio 🎶
-║ 2️⃣ / video 🎥
-║ 4️⃣ / audiodoc 📄
-║ 3️⃣ / videodoc 📁
-╚════════════════════╝
+> 🎧 *SYA TEAM BOT* 🎧
+
+🎼 *Título:* ${title}
+⏳ *Duración:* ${duration}
+👁️ *Vistas:* ${viewsFmt}
+📡 *Canal:* ${author}
+🔗 *Link:* ${videoUrl}
+
+📥 *Opciones de descarga:*
+1️⃣ *Audio MP3* 🎵🎧
+2️⃣ *Video MP4* 🎬📽️
+4️⃣ *Audio Documento* 📄📝
+3️⃣ *Video Documento* 📁📂
 `;
 
   const preview = await conn.sendMessage(
