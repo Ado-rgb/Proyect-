@@ -8,7 +8,7 @@ const handler = async (msg, { conn, text, args, usedPrefix, command }) => {
   }
 
   const query = args.join(" ");
-  const apiUrl = `https://api.neoxr.eu/api/gpt4-session?q=${encodeURIComponent(query)}&session=1727468410446638&apikey=russellxz`;
+  const apiUrl = `https://api.neoxr.eu/api/gpt4-session?q=${encodeURIComponent(query)}&session=1727468410446638&apikey=GataDios`;
   const userId = msg.key.participant || msg.key.remoteJid;
 
   await conn.sendMessage(msg.key.remoteJid, {
