@@ -3373,7 +3373,7 @@ case 'allmenu': {
 
         // Reacción inicial (se mantiene sendMessage normal)
         await sock.sendMessage(chatId, { 
-            react: { text: "📜", key: msg.key }
+            react: { text: "♥️", key: msg.key }
         });
 
         // Leer y procesar comandos
@@ -3390,11 +3390,7 @@ case 'allmenu': {
         let totalComandos = commands.length;
 
         // Construir menú
-        let commandList = `╔════════════════╗  
-║  𝘼𝙕𝙐𝙍𝘼 𝙐𝙇𝙏𝙍𝘼 ALL MENU            
-╚═════════════════╝  
-        📜 *Menú Completo*  
-━━━━━━━━━━━━━━━━━━━  
+        let commandList = `━━━━━━━━━━━━━━━━━━━  
 📌 𝗧𝗢𝗧𝗔𝗟 𝗗𝗘 𝗖𝗢𝗠𝗔𝗡𝗗𝗢𝗦: ${totalComandos}  
 📌 𝗣𝗿𝗲𝗳𝗶𝗷𝗼 𝗔𝗰𝘁𝘂𝗮𝗹: 『${global.prefix}』  
 📌 𝗨𝘀𝗮 『${global.prefix}』 𝗮𝗻𝘁𝗲𝘀 𝗱𝗲 𝗰𝗮𝗱𝗮 𝗰𝗼𝗺𝗮𝗻𝗱𝗼.  
@@ -3405,17 +3401,13 @@ case 'allmenu': {
             commandList += `➫ *${global.prefix}${cmd}*\n`;
         });
 
-        commandList += `━━━━━━━━━━━━━━━━━━━  
-👨‍💻 𝘿𝙚𝙨𝙖𝙧𝙧𝙤𝙡𝙡𝙖𝙙𝙤 𝙥𝙤𝙧 𝙍𝙪𝙨𝙨𝙚𝙡𝙡 𝙓𝙕  
-╭─────────────╮  
-│    𝘼𝙕𝙐𝙍𝘼 𝙐𝙇𝙏𝙍𝘼    
-╰─────────────╯`;
+        commandList += `━━━━━━━━•𝐒𝐲𝐚𝐓𝐞𝐚𝐦•━━━━━━━━`;
 
         // Enviar usando sendMessage2
         await sock.sendMessage2(
   chatId,
   {
-    image: { url: "https://cdn.russellxz.click/9bd11d81.jpeg" }, 
+    image: { url: "https://files.catbox.moe/5qykvg.png" }, 
     caption: commandList 
   },
   msg 
