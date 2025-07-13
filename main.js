@@ -3501,7 +3501,7 @@ case 'menurpg': {
 
     const chatId = msg.key.remoteJid;
     const menuText = `╔═════════════════╗  
-║  𝘼𝙕𝙐𝙍𝘼 𝙐𝙇𝙏𝙍𝘼 MENU RPG       
+║  SYA TEAM BOT MENU RPG       
 ╚═════════════════╝  
 
 ✦ 𝐁𝐈𝐄𝐍𝐕𝐄𝐍𝐈𝐃𝐎 𝐀𝐋 𝐌𝐄𝐍𝐔 𝐑𝐏𝐆 ✦  
@@ -4562,8 +4562,8 @@ case 'todos': {
     const args = messageText.trim().split(" ").slice(1);
     const extraMsg = args.join(" ");
 
-    let finalMsg = "━〔 *📢 INVOCACIÓN 📢* 〕━➫\n";
-    finalMsg += "٩(͡๏̯͡๏)۶ Por SYA TEAM BOT ٩(͡๏̯͡๏)۶\n";
+    let finalMsg = "> -[ *📢 INVOCACIÓN 📢*]-\n";
+    finalMsg += "(^o^) Por SYA TEAM BOT (^o^)\n";
     if (extraMsg.trim().length > 0) {
       finalMsg += `\n❑ Mensaje: ${extraMsg}\n\n`;
     } else {
