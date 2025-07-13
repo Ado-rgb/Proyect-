@@ -1,66 +1,67 @@
 const fs = require('fs');
 
-module.exports = async (msg, { conn }) => {
+const handler = async (msg, { conn }) => {
   try {
     const userId = msg.key.participant || msg.key.remoteJid;
-    const rpgFile = "./rpg.json";
+    const rpgFile = './rpg.json';
 
-    // Verificar si hay una solicitud de eliminación pendiente
+    // 🧾 Verifica si el usuario tiene una eliminación pendiente
     if (!global.pendingDeletions || !global.pendingDeletions[userId]) {
-      await conn.sendMessage(msg.key.remoteJid, { 
-        text: `❌ *No tienes una solicitud de eliminación pendiente.* Usa \`${global.prefix}deleterpg\` para iniciar la eliminación de tu cuenta.` 
+      return await conn.sendMessage(msg.key.remoteJid, {
+        text: `❌ *No tienes una solicitud activa para eliminar tu cuenta.*\n📌 Usa \`${global.prefix}deleterpg\` para iniciar la eliminación.`,
       }, { quoted: msg });
-      return;
     }
 
-    // Cancelar temporizador y remover de la lista de eliminaciones
+    // 🛑 Cancela el temporizador y elimina la solicitud de la lista
     clearTimeout(global.pendingDeletions[userId]);
     delete global.pendingDeletions[userId];
 
-    // Cargar datos del RPG
-    let rpgData = JSON.parse(fs.readFileSync(rpgFile, "utf-8"));
+    // 📂 Cargar archivo de RPG
+    const rpgData = JSON.parse(fs.readFileSync(rpgFile, 'utf-8'));
 
-    // Verificar si el usuario está registrado
+    // 📌 Validar si el usuario tiene cuenta
     if (!rpgData.usuarios[userId]) {
-      await conn.sendMessage(msg.key.remoteJid, { 
-        text: "❌ *No tienes un registro en el gremio Azura Ultra.*" 
+      return await conn.sendMessage(msg.key.remoteJid, {
+        text: "⚠️ *No tienes una cuenta activa en el gremio Sya RPG.*\n🔹 Usa `.rpg nombre edad` para crearla.",
       }, { quoted: msg });
-      return;
     }
 
-    // Recuperar personajes del usuario y devolverlos a la tienda
-    let usuario = rpgData.usuarios[userId];
+    // 🔄 Reintegrar personajes a la tienda
+    const usuario = rpgData.usuarios[userId];
     if (usuario.personajes && usuario.personajes.length > 0) {
       rpgData.tiendaPersonajes.push(...usuario.personajes);
     }
 
-    // Eliminar el usuario
+    // 🗑️ Eliminar cuenta del usuario
     delete rpgData.usuarios[userId];
 
-    // Guardar los cambios en el archivo JSON
+    // 💾 Guardar cambios
     fs.writeFileSync(rpgFile, JSON.stringify(rpgData, null, 2));
 
-    // Confirmar eliminación
-    await conn.sendMessage(msg.key.remoteJid, { 
-      text: `🗑️ *Tu cuenta ha sido eliminada del gremio Azura Ultra.*\n\n🔹 Puedes volver a registrarte en cualquier momento usando \`${global.prefix}rpg <nombre> <edad>\`.` 
+    // ✅ Confirmación al usuario
+    await conn.sendMessage(msg.key.remoteJid, {
+      text: `🗑️ *Tu cuenta ha sido eliminada con éxito del gremio Sya Team Subbot.*\n\n🎮 Si deseas volver a jugar, regístrate con:\n\`${global.prefix}rpg <nombre> <edad>\``,
     }, { quoted: msg });
 
-    // ✅ Reacción de confirmación
-    await conn.sendMessage(msg.key.remoteJid, { 
-      react: { text: "✅", key: msg.key } // Emoji de confirmación ✅
+    // ✅ Emoji de confirmación
+    await conn.sendMessage(msg.key.remoteJid, {
+      react: { text: "✅", key: msg.key }
     });
 
   } catch (error) {
     console.error("❌ Error en el comando .ok:", error);
-    await conn.sendMessage(msg.key.remoteJid, { 
-      text: "❌ *Ocurrió un error al confirmar la eliminación. Inténtalo de nuevo.*" 
+
+    // ❌ Mensaje de error visible al usuario
+    await conn.sendMessage(msg.key.remoteJid, {
+      text: "❌ *Ocurrió un error al confirmar la eliminación.*\n🔁 Inténtalo más tarde o contacta a un admin.",
     }, { quoted: msg });
 
-    // ❌ Enviar reacción de error
-    await conn.sendMessage(msg.key.remoteJid, { 
-      react: { text: "❌", key: msg.key } // Emoji de error ❌
+    // ❌ Emoji de error
+    await conn.sendMessage(msg.key.remoteJid, {
+      react: { text: "❌", key: msg.key }
     });
   }
 };
 
-module.exports.command = ['ok'];
+handler.command = ['ok'];
+module.exports = handler;
