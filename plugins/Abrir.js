@@ -9,7 +9,7 @@ const handler = async (msg, { conn, args }) => {
 
   if (!isGroup) {
     await conn.sendMessage(chatId, {
-      text: "❌ Este comando solo puede usarse en grupos."
+      text: "❌ *Este comando solo funciona en grupos.*"
     }, { quoted: msg });
     return;
   }
@@ -22,14 +22,20 @@ const handler = async (msg, { conn, args }) => {
 
   if (!isAdmin && !isOwner && !isFromMe) {
     await conn.sendMessage(chatId, {
-      text: "🚫 Solo administradores o owners pueden usar este comando."
+      text: "🚫 *Solo administradores y dueños pueden usar este comando.*"
     }, { quoted: msg });
     return;
   }
 
   if (!args[0]) {
     await conn.sendMessage(chatId, {
-      text: "⚙️ Usa: *abrir 10s*, *abrir 10m* o *abrir 1h* para programar la apertura automática."
+      text: `
+⚙️ *Uso correcto:*
+
+*abrir 10s*  → Abrir grupo en 10 segundos ⏳  
+*abrir 10m*  → Abrir grupo en 10 minutos ⏰  
+*abrir 1h*   → Abrir grupo en 1 hora 🕐  
+`.trim()
     }, { quoted: msg });
     return;
   }
@@ -37,7 +43,7 @@ const handler = async (msg, { conn, args }) => {
   const match = args[0].match(/^(\d+)([smh])$/i);
   if (!match) {
     await conn.sendMessage(chatId, {
-      text: "❌ Formato incorrecto. Usa: *abrir 10s*, *abrir 10m* o *abrir 1h*."
+      text: "❌ *Formato inválido.* Usa: abrir 10s | abrir 10m | abrir 1h"
     }, { quoted: msg });
     return;
   }
@@ -49,11 +55,10 @@ const handler = async (msg, { conn, args }) => {
   if (unit === "s") milliseconds = amount * 1000;
   else if (unit === "m") milliseconds = amount * 60 * 1000;
   else if (unit === "h") milliseconds = amount * 60 * 60 * 1000;
-  else milliseconds = 0;
 
   if (milliseconds <= 0) {
     await conn.sendMessage(chatId, {
-      text: "❌ Tiempo inválido."
+      text: "❌ *Tiempo inválido.*"
     }, { quoted: msg });
     return;
   }
@@ -69,7 +74,10 @@ const handler = async (msg, { conn, args }) => {
   fs.writeFileSync(tiempoPath, JSON.stringify(tiempoData, null, 2));
 
   await conn.sendMessage(chatId, {
-    text: `⏳ Grupo programado para abrirse automáticamente en *${amount}${unit}*.`
+    text: `
+⏳ *Grupo programado para abrirse automáticamente en:*  
+*${amount}${unit.toUpperCase()}* ✅  
+*SYA TEAM BOT* 🔥`.trim()
   }, { quoted: msg });
 
   await conn.sendMessage(chatId, {
