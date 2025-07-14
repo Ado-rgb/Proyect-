@@ -12,8 +12,7 @@ module.exports = async (msg, { conn, usedPrefix }) => {
 ╭─━━━━━━━━━━━━━━━─╮
 │ 🚀 𝗕𝗜𝗘𝗡𝗩𝗘𝗡𝗜𝗗𝗢 𝗔𝗟 𝗥𝗣𝗚 🚀 │
 ╰─━━━━━━━━━━━━━━━─╯
-│
-│  🌟 ¡Sumérgete en el mundo de Azura Ultra!  
+│ 
 │  🎭 Crea y mejora tus personajes  
 │  🐾 Entrena a tus mascotas  
 │  ⚔️ ¡Vive épicas aventuras y sube de nivel!
