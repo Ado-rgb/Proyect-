@@ -26,7 +26,7 @@ module.exports = async (msg, { conn, text }) => {
       {
         text:
           `❗ *Uso:* *${pref}playpro* <término de búsqueda> 🎶\n` +
-          `🔍 *Ejemplo:* *${pref}playpro* bad bunny diles`
+          `🔍 *Ejemplo:* *${pref}play* bad bunny diles`
       },
       { quoted: msg }
     );
@@ -152,7 +152,7 @@ async function handleDownload(conn, job, choice, quotedMsg) {
 
 async function downloadAudio(conn, job, asDocument, quoted) {
   const { chatId, videoUrl, title } = job;
-  const api = `https://api.neoxr.eu/api/youtube?url=${encodeURIComponent(videoUrl)}&type=audio&quality=128kbps&apikey=GataDios`;
+  const api = `https://api.neoxr.eu/api/youtube?url=${encodeURIComponent(videoUrl)}&type=audio&quality=128kbps&apikey=russellxz`;
   const res = await axios.get(api);
   if (!res.data?.status || !res.data.data?.url) throw new Error("No se pudo obtener el audio");
   const tmp = path.join(__dirname, "../tmp");
